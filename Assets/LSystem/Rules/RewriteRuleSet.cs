@@ -15,12 +15,14 @@ public class RewriteOption
 [Serializable]
 public class RewriteRuleSet
 {
-    // For each predecessor char, we can have multiple options (stochastic).
-    // If only one option -> deterministic D0L.
+    // Rule mapping: predecessor char -> list of rewrite options.
+    // If list size is 1, the rule is effectively deterministic.
     private readonly Dictionary<char, List<RewriteOption>> _rules = new();
 
+    // Removes all current rules
     public void Clear() => _rules.Clear();
 
+    // Adds or replaces a deterministic rule
     public void AddDeterministic(char predecessor, List<Symbol> successor)
     {
         _rules[predecessor] = new List<RewriteOption>
@@ -29,11 +31,13 @@ public class RewriteRuleSet
         };
     }
 
+    // Adds or replaces a stochastic rule
     public void AddStochastic(char predecessor, params RewriteOption[] options)
     {
         _rules[predecessor] = new List<RewriteOption>(options);
     }
 
+    // Attempts to retrieve a successor sequence
     public bool TryGetSuccessor(char predecessor, System.Random rng, out List<Symbol> successor)
     {
         successor = null;

@@ -15,6 +15,7 @@ public class Turtle3D : MonoBehaviour
     [Header("Debug")]
     public bool drawLeaves = true;
 
+    //Captures the turtles current interpretation state
     private struct TurtleState
     {
         public Vector3 pos;
@@ -28,6 +29,7 @@ public class Turtle3D : MonoBehaviour
 
     public Transform GenerateRoot { get; private set; }
 
+    // Destroys the current root object
     public void ClearGenerated()
     {
         if (GenerateRoot != null)
@@ -37,20 +39,21 @@ public class Turtle3D : MonoBehaviour
         }
     }
 
+    // Interprets a sequence of L-System and generates geometry
     public void Interpret(List<Symbol> symbols)
     {
         ClearGenerated();
 
+        // Create new root
         var root = new GameObject("LSystem_GeneratedRoot");
         GenerateRoot = root.transform;
         GenerateRoot.SetParent(transform, false);
 
         _stack.Clear();
 
+        // Initialize turtle state
         TurtleState state = new TurtleState
         {
-            // pos = Vector3.zero,
-            // rot = Quaternion.identity,
             pos = transform.position,
             rot = transform.rotation,
             step = stepLength,
@@ -64,7 +67,7 @@ public class Turtle3D : MonoBehaviour
 
             switch (c)
             {
-                case 'F':
+                case 'F':  // Draw a branch
                 {
                     Vector3 start = state.pos;
                     Vector3 dir = state.rot * Vector3.up; // turtle forward = up
